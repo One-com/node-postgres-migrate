@@ -1,6 +1,18 @@
 language: node_js
-sudo: false
 node_js:
   - 0.10
   - 4.2
+env:
+  - CXX=g++-4.8
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+sudo: required
+services:
+  - docker
+before_install:
+  - docker pull postgres
 script: "npm run travis"
