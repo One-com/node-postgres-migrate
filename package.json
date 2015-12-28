@@ -5,7 +5,8 @@
   "main": "index.js",
   "license": "BSD-3-Clause",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "travis": "npm test"
   },
   "author": "Gustav Nikolaj Olsen <gno@one.com>",
   "devDependencies": {
