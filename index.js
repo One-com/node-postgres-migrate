@@ -8,6 +8,11 @@ var executeMigrations = require('./lib/executeMigrations');
 var broadcastLockRelease = require('./lib/broadcastLockRelease');
 var awaitLockRelease = require('./lib/awaitLockRelease');
 
+// for nodejs pre 0.12 support
+if (typeof Promise === 'undefined') {
+  var Promise = require('when').Promise;
+}
+
 module.exports = function migrate (input) {
     options = options || {};
 

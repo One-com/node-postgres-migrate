@@ -3,6 +3,11 @@ var expect = require('unexpected');
 var pg = require('pg');
 var broadcastLockRelease = require('../../lib/broadcastLockRelease');
 
+// for nodejs pre 0.12 support
+if (typeof Promise === 'undefined') {
+  var Promise = require('when').Promise;
+}
+
 describe('lib/broadcastLockRelease @postgres', function () {
     var options = {};
     before(function () {
@@ -32,7 +37,7 @@ describe('lib/broadcastLockRelease @postgres', function () {
             .then(function () {
                 // This is necessary to let the listener do his work
                 return new Promise(function (resolve) {
-                    setImmediate(resolve);
+                    setTimeout(resolve, 10);
                 })
             })
             .then(function () {

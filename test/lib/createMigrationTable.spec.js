@@ -1,6 +1,6 @@
 require('mocha-docker-postgres');
 var expect = require('unexpected');
-var pgp = require('pg-promise')({});
+var pgp = require('../../lib/util/pgPromise');
 var createMigrationTable = require('../../lib/createMigrationTable');
 
 describe('lib/createMigrationTable @postgres', function () {

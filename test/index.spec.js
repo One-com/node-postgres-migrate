@@ -4,6 +4,11 @@ var expect = require('unexpected')
     .use(require('unexpected-fs'));
 var migrate = require('../');
 
+// for nodejs pre 0.12 support
+if (typeof Promise === 'undefined') {
+  var Promise = require('when').Promise;
+}
+
 function extend(dest) {
     var rest = Array.prototype.slice.call(arguments, 1);
     return rest.reduce(function (dest, source) {
