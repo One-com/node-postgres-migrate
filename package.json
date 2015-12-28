@@ -1,0 +1,22 @@
+{
+  "name": "postgres-migrate",
+  "version": "0.0.0",
+  "description": "Execute migrations on a postgres database.",
+  "main": "index.js",
+  "license": "BSD-3-Clause",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Gustav Nikolaj Olsen <gno@one.com>",
+  "devDependencies": {
+    "mocha": "2.3.3",
+    "mocha-docker-postgres": "0.0.2",
+    "unexpected": "10.0.2",
+    "unexpected-fs": "2.1.3"
+  },
+  "dependencies": {
+    "pg": "4.4.3",
+    "pg-promise": "2.8.4",
+    "when": "3.7.4"
+  }
+}
