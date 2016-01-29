@@ -44,7 +44,12 @@ module.exports = function migrate (input) {
                     .then(function (applied) {
                         return findMigrations(options).then(function (migrations) {
                             return migrations.filter(function (migration) {
-                                return applied.indexOf(migration.name) === -1;
+                                return !(applied.some(function (appliedMigration) {
+                                    return (
+                                        appliedMigration.id === migration.id &&
+                                        appliedMigration.name === migration.name
+                                    )
+                                }));
                             });
                         });
                     })
