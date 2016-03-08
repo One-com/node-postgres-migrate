@@ -1,6 +1,6 @@
 {
   "name": "postgres-migrate",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Execute migrations on a postgres database.",
   "main": "index.js",
   "license": "BSD-3-Clause",
