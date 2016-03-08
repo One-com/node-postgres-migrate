@@ -3,6 +3,18 @@ var expect = require('unexpected')
     .clone()
     .use(require('unexpected-fs'));
 var migrate = require('../');
+var pgp = require('../lib/util/pgPromise');
+
+function enableConnectionPooling(numberOfConnections) {
+    pgp.pg.defaults.poolSize = 5;
+}
+
+function disableConnectionPoolingAndCleanup() {
+    pgp.pg.end();
+    pgp.pg.defaults.poolSize = 0;
+}
+
+enableConnectionPooling();
 
 // for nodejs pre 0.12 support
 if (typeof Promise === 'undefined') {
@@ -45,6 +57,11 @@ describe('migrate @postgres', function () {
         options.reporter = console.log.bind(console);
         options.reporter = function () {};
         options.migrationsDir = '/migrations';
+
+        disableConnectionPoolingAndCleanup();
+    });
+    after(function () {
+        disableConnectionPoolingAndCleanup();
     });
 
     describe('single migration process', function () {
@@ -56,6 +73,11 @@ describe('migrate @postgres', function () {
     });
 
     describe('multiple migration processes', function () {
+        beforeEach(function () {
+            // Enable connection pooling for these tests, as they require multiple
+            // parallel migration processes.
+            enableConnectionPooling();
+        });
         it('should migrate a database to the newest state', function () {
             var enableLogging = false;
             var options1 = extend({}, options, { reporter: function () {
