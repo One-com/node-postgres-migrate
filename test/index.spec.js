@@ -5,13 +5,13 @@ var expect = require('unexpected')
 var migrate = require('../');
 var pgp = require('../lib/util/pgPromise');
 
-function enableConnectionPooling(numberOfConnections) {
-    pgp.pg.defaults.poolSize = 5;
+function enableConnectionPooling() {
+    pgp.restoreInitialPoolSize();
 }
 
 function disableConnectionPoolingAndCleanup() {
     pgp.pg.end();
-    pgp.pg.defaults.poolSize = 0;
+    pgp.reinitialize();
 }
 
 enableConnectionPooling();
@@ -69,6 +69,27 @@ describe('migrate @postgres', function () {
             return expect(options, 'with fs mocked out', {
                 '/migrations': migrationsDir
             }, 'when passed as parameter to', migrate, 'to be fulfilled');
+        });
+        it('should reenable connection pooling after running', function () {
+            // reset connection pooling
+            enableConnectionPooling();
+            return expect(pgp.pg.defaults, 'to satisfy', {
+                poolSize: pgp.initialDefaultPoolSize
+            }).then(function () {
+                // reinitialize the pgp module as when it's first required
+                pgp.reinitialize();
+                return expect(pgp.pg.defaults, 'to satisfy', {
+                    poolSize: 0
+                }).then(function () {
+                    return expect(options, 'with fs mocked out', {
+                        '/migrations': migrationsDir
+                    }, 'when passed as parameter to', migrate, 'to be fulfilled').then(function () {
+                        return expect(pgp.pg.defaults, 'to satisfy', {
+                            poolSize: pgp.initialDefaultPoolSize
+                        });
+                    });
+                });
+            });
         });
     });
 

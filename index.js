@@ -7,6 +7,7 @@ var loadMigrations = require('./lib/loadMigrations');
 var executeMigrations = require('./lib/executeMigrations');
 var broadcastLockRelease = require('./lib/broadcastLockRelease');
 var awaitLockRelease = require('./lib/awaitLockRelease');
+var pgp = require('./lib/util/pgPromise');
 
 // for nodejs pre 0.12 support
 if (typeof Promise === 'undefined') {
@@ -60,8 +61,12 @@ module.exports = function migrate (input) {
                         return executeMigrations(options, migrations);
                     })
                     .then(function () { return releaseLock(); })
-                    .then(function () { return broadcastLockRelease(options); });
+                    .then(function () { return broadcastLockRelease(options); })
+                    .then(function () {
+                        pgp.restoreInitialPoolSize();
+                    });
             }).catch(function (err) {
+                pgp.restoreInitialPoolSize();
                 if (err.code === 'LOCK_ALREADY_TAKEN') {
                     return awaitLockRelease(options);
                 }
